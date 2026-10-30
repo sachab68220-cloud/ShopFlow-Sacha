@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="VERSION_SACHA/VERSION_SACHA.vcxproj" />
+  <Project Path="VERSION_SACHA/VERSION_SACHA.vcxproj" Id="be082d5f-66b7-4fd6-aa14-01618e106580" />
 </Solution>
