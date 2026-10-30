@@ -3,4 +3,4 @@
 #include <string.h>
 #include "clients.h"
 
-/* Fonctions du module clients */
+

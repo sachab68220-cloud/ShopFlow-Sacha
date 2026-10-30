@@ -12,6 +12,8 @@ int main(void)
 {
     Boutique boutique = { "ShopFlow", NULL, 0, 0, NULL, 0, 0, 1001, 1 };
 
+    initialiserDonneesTest(&boutique);
+
     color(96);
     printf("                                      ==============================================\n");
     printf("                                      ||                                          ||\n");
@@ -44,6 +46,11 @@ int main(void)
         if (choix == 1)
         {
             system("cls");
+            color(96);
+            printf("+--------------------------------------+\n");
+            printf("|               Sous-Menu              |\n");
+            printf("+--------------------------------------+\n\n");
+            color(0);
             printf("1. Afficher le catalogue\n");
             printf("2. Ajouter un produit\n");
             printf("3. Modifier un produit\n");
@@ -61,11 +68,42 @@ int main(void)
             {
                 ajouterProduit(&boutique);
             }
+            else if (choix2 == 5)
+            {
+                char ref[12];
+                int position;
+
+                system("cls");
+                color(96);
+                printf("+--------------------------------------+\n");
+                printf("|         RECHERCHER UN PRODUIT        |\n");
+                printf("+--------------------------------------+\n\n");
+                color(0);
+
+                printf("Reference a chercher: ");
+                scanf("%11s", ref);
+
+                position = rechercherProduit(&boutique, ref);
+
+                if (position != -1)
+                {
+                    printf("Position trouve !\n\n");
+                    printf("Reference: %s\n", boutique.produits[position].reference);
+                    printf("Designation: %s\n", boutique.produits[position].designation);
+                    printf("Prix: %.2f\n", boutique.produits[position].prixUnitaireHT);
+                    printf("Stock: %d\n", boutique.produits[position].quantiteStock);
+                }
+            }
         }
 
         else if (choix == 2)
         {
             system("cls");
+            color(96);
+            printf("+--------------------------------------+\n");
+            printf("|               Sous-Menu              |\n");
+            printf("+--------------------------------------+\n\n");
+            color(0);
             printf("1. Afficher la liste des clients\n");
             printf("2. Afficher un client\n");
             printf("3. Ajouter un client\n");
@@ -79,6 +117,11 @@ int main(void)
         else if (choix == 3)
         {
             system("cls");
+            color(96);
+            printf("+--------------------------------------+\n");
+            printf("|               Sous-Menu              |\n");
+            printf("+--------------------------------------+\n\n");
+            color(0);
             printf("1. Creer une commande\n");
             printf("2. Afficher une commande\n");
             printf("3. Ajouter une ligne\n");
@@ -93,6 +136,11 @@ int main(void)
         else if (choix == 4)
         {
             system("cls");
+            color(96);
+            printf("+--------------------------------------+\n");
+            printf("|               Sous-Menu              |\n");
+            printf("+--------------------------------------+\n\n");
+            color(0);
             printf("1. Chiffre d'affaires\n");
             printf("2. Palmares produits\n");
             printf("3. Palmares clients\n");

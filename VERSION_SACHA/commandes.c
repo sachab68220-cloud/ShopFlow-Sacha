@@ -3,4 +3,4 @@
 #include <string.h>
 #include "commandes.h"
 
-/* Fonctions du module commandes */
+

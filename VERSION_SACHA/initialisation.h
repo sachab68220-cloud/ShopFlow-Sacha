@@ -2,4 +2,4 @@
 
 #include "types.h"
 
-/* Prototypes du module initialisation */
+void initialiserDonneesTest(Boutique* b);

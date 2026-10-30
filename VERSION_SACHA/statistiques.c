@@ -3,4 +3,3 @@
 #include <string.h>
 #include "statistiques.h"
 
-/* Fonctions du module statistiques */

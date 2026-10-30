@@ -17,6 +17,7 @@ void afficherProduits(Boutique* b)
 
     for (i = 0; i < b->nbProduits; i++)
     {
+        printf("----------------------------------------------------------\n");
         printf("Reference: %s\nDesignation: %s\nPrix unitaire: %.2f\n",
             b->produits[i].reference,
             b->produits[i].designation,
@@ -115,3 +116,29 @@ int ajouterProduit(Boutique* b)
 
     return 1;
 }
+
+
+int rechercherProduit(Boutique* b, char* ref)
+{
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|         RECHERCHER UN PRODUIT        |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    int i;
+
+    for (i = 0; i < b->nbProduits; i++)
+    {
+        if (strcmp(b->produits[i].reference, ref) == 0)
+        {
+            return i;         
+        }
+    }
+
+    printf("Ce produit n'existe pas encore\n");
+    return -1;
+}
+
