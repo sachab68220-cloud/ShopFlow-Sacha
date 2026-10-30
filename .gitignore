@@ -1,0 +1,14 @@
+# Fichiers generes par Visual Studio
+.vs/
+x64/
+Debug/
+Release/
+*.user
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.log
+*.tlog
+*.idb
+*.recipe
