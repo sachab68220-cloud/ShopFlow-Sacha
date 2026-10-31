@@ -18,7 +18,7 @@ int VerifChiffres(char* texte, int longueur)
     int i;
     for (i = 0; i < longueur; i++)
     {
-        if (texte[i] < '0' || texte[i] > 9)
+        if (texte[i] < '0' || texte[i] > '9')
         {
             return 0;
         }

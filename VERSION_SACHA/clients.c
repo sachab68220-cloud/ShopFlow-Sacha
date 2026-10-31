@@ -131,3 +131,56 @@ int ajouterClient(Boutique* b)
 	return 1;
 
 }
+
+
+
+
+
+int rechercheClient(Boutique* b, int id)
+{
+	system("cls");
+	color(96);
+	printf("+--------------------------------------+\n");
+	printf("|         RECHERCHER DES CLIENTS       |\n");
+	printf("+--------------------------------------+\n\n");
+	color(0);
+
+	int choix;
+	printf("1. Chercher par ID\n");
+	printf("2. Chercher par Nom/Prenom");
+
+	if (choix == 1)
+	{
+		int i;
+		for (i = 0; i < b->nbClients; i++)
+		{
+			if (b->clients[i].idClient == id)
+			{
+				return id;
+			}
+		}
+		color(31);
+		printf("Ce client n'existe pas !");
+		color(0);
+		return -1;
+	}
+	else if (choix == 2)
+	{
+		int i;
+		for (i = 0; i < b->nbClients; i++)
+		{
+			if (strcmp(b->clients[i].telephone, id) == O)
+			{
+				return id;
+			}
+		}
+		color(31);
+		printf("Ce client n'existe pas !");
+		color(0);
+		return -1;
+	}
+	else
+	{
+		return;
+	}
+}
