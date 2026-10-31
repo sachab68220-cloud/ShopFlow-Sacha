@@ -138,7 +138,9 @@ int rechercherProduit(Boutique* b, char* ref)
         }
     }
 
+    color(31);
     printf("Ce produit n'existe pas encore\n");
+    color(0);
     return -1;
 }
 

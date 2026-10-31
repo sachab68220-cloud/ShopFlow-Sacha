@@ -125,6 +125,32 @@ int main(void)
             {
                 afficherClient(&boutique);
             }
+            else if (choix2 == 2)
+            {
+                int id;
+                int position;
+
+                printf("Entrez l'ID du client: ");
+                scanf("%d", id);
+
+                position = rechercheClient(&boutique, id);
+
+                if (position != -1)
+                {
+                    printf("Position trouve !\n\n");
+                    printf("Client n%d: %s %s\n", boutique.clients[position].idClient, boutique.clients[position].nom, boutique.clients[position].prenom);
+                       printf("Email: %s\n", boutique.clients[position].email);
+                    printf("Telephone: %s\n", boutique.clients[position].telephone);
+                    printf("Rue: %s\n", boutique.clients[position].adresse.rue);
+                    printf("Ville: %s\n", boutique.clients[position].adresse.ville);
+                    printf("Code Postal: %s\n", boutique.clients[position].adresse.codePostal);
+                    printf("Pays: %s\n", boutique.clients[position].adresse.pays);
+                    color(32);
+                    printf("Points de fidelite: %d\n", boutique.clients[position].pointsFidelite);
+                    color(0);
+                    printf("Nombre de commandes: %d\n", boutique.clients[position].nbCommandes);
+                }
+            }
             else if (choix2 == 3)
             {
                 ajouterClient(&boutique);
