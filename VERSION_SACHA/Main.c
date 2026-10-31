@@ -95,11 +95,13 @@ int main(void)
 
                 if (position != -1)
                 {
+                    color(32);
                     printf("Position trouve !\n\n");
+                    color(0);
                     printf("Reference: %s\n", boutique.produits[position].reference);
                     printf("Designation: %s\n", boutique.produits[position].designation);
                     printf("Prix: %.2f\n", boutique.produits[position].prixUnitaireHT);
-                    printf("Stock: %d\n", boutique.produits[position].quantiteStock);
+                    printf("Stock: %d\n\n", boutique.produits[position].quantiteStock);
                 }
             }
         }
@@ -127,17 +129,26 @@ int main(void)
             }
             else if (choix2 == 2)
             {
+                system("cls");
+                color(96);
+                printf("+--------------------------------------+\n");
+                printf("|         RECHERCHER DES CLIENTS       |\n");
+                printf("+--------------------------------------+\n\n");
+                color(0);
+
                 int id;
                 int position;
 
                 printf("Entrez l'ID du client: ");
-                scanf("%d", id);
+                scanf("%d", &id);
 
                 position = rechercheClient(&boutique, id);
 
                 if (position != -1)
                 {
+                    color(32);
                     printf("Position trouve !\n\n");
+                    color(0);
                     printf("Client n%d: %s %s\n", boutique.clients[position].idClient, boutique.clients[position].nom, boutique.clients[position].prenom);
                        printf("Email: %s\n", boutique.clients[position].email);
                     printf("Telephone: %s\n", boutique.clients[position].telephone);
@@ -148,12 +159,16 @@ int main(void)
                     color(32);
                     printf("Points de fidelite: %d\n", boutique.clients[position].pointsFidelite);
                     color(0);
-                    printf("Nombre de commandes: %d\n", boutique.clients[position].nbCommandes);
+                    printf("Nombre de commandes: %d\n\n", boutique.clients[position].nbCommandes);
                 }
             }
             else if (choix2 == 3)
             {
                 ajouterClient(&boutique);
+            }
+            else if (choix2 == 4)
+            {
+                modifierClient(&boutique);
             }
         }
 

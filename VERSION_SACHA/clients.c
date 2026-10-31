@@ -149,7 +149,7 @@ int rechercheClient(Boutique* b, int id)
 
 	for (i = 0; i < b->nbClients; i++)
 	{
-		if (b->clients->idClient == id)
+		if (b->clients[i].idClient == id)
 		{
 			return i;
 		}
@@ -158,4 +158,119 @@ int rechercheClient(Boutique* b, int id)
 	printf("Ce client n'existe pas !\n");
 	color(0);
 	return -1;
+}
+
+
+
+
+void modifierClient(Boutique* b)
+{
+	int id;
+	int position;
+
+	system("cls");
+	color(96);
+	printf("+--------------------------------------+\n");
+	printf("|         RECHERCHER DES CLIENTS       |\n");
+	printf("+--------------------------------------+\n\n");
+	color(0);
+
+	printf("Entrez l'ID du client que vous voulez modifie: ");
+	scanf("%d", &id);
+	
+	position = rechercheClient(b, id);
+
+	system("cls");
+	color(96);
+	printf("+--------------------------------------+\n");
+	printf("|          MODIFIER DES CLIENTS        |\n");
+	printf("+--------------------------------------+\n\n");
+	color(0);
+
+	if (position == -1)
+	{
+		return;
+	}
+
+	if (b->clients[position].actif == 0)
+	{
+		color(31);
+		printf("Ce client a ete supprime !\n\n");
+		color(0);
+		return;
+	}
+
+	color(32);
+	printf("Client trouve !\n\n");
+	color(0);
+
+	printf("Nom actuel: %s\n", b->clients[position].nom);
+	printf("Prenom actuel: %s\n", b->clients[position].prenom);
+	printf("Email actuel: %s\n", b->clients[position].email);
+	printf("Telephone actuel: %s\n", b->clients[position].telephone);
+	printf("Rue actuelle: %s\n", b->clients[position].adresse.rue);
+	printf("Ville actuelle: %s\n", b->clients[position].adresse.ville);
+	printf("Code postal actuel: %s\n", b->clients[position].adresse.codePostal);
+	printf("Pays actuel: %s\n\n", b->clients[position].adresse.pays);
+
+	printf("----------------------------------------------------------\n\n");
+
+	printf("Nouveau nom: ");
+	scanf("%s", &b->clients[position].nom);
+
+	printf("Nouveau prenom: ");
+	scanf("%s", &b->clients[position].prenom);
+
+	do
+	{
+		char email[80];
+		printf("Nouvelle email: ");
+		scanf("%79s", email);
+
+		if (strchr(email, '@') == NULL)
+		{
+			color(31);
+			printf("L'email doit contenir un @ !\n");
+			color(0);
+		}
+	} while (strchr(email, '@') == NULL);
+
+	int i;
+	for (i = 0; i < b->nbClients; i++)
+	{
+		if (i != position && strcmp(b->clients[i].email, email) == 0)
+		{
+			color(31);
+			printf("Cet email est deja utilise !\n\n");
+			color(0);
+			return;
+		}
+	}
+	strcpy(b->clients[position].email, email);
+
+	do
+	{
+		printf("Nouveau telephone: ");
+		scanf("%14s", &b->clients[position].telephone);
+	} while (VerifChiffres(b->clients[position].telephone, 10) == 0);
+
+	printf("Nouvelle Rue: ");
+	scanf(" %79[^\n]", &b->clients[position].adresse.rue);
+
+	printf("Nouvelle ville: ");
+	scanf(" %49[^\n]", &b->clients[position].adresse.ville);
+
+	do
+	{
+		printf("Code postal: ");
+		scanf("%5s", &b->clients[position].adresse.codePostal);
+	} while (VerifChiffres(b->clients[position].adresse.codePostal, 5) == 0);
+
+	printf("Nouveau pays: ");
+	scanf(" %49[^\n]", &b->clients[position].adresse.pays);
+
+	color(32);
+	printf("Client modifie avec succes !\n\n");
+	color(0);
+	
 }
