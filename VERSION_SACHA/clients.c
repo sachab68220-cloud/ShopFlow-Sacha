@@ -46,8 +46,18 @@ int ajouterClient(Boutique* b)
 	printf("+--------------------------------------+\n\n");
 	color(0);
 
-	printf("Mail du nouveau client: ");
-	scanf("%79s", c.email);
+	do
+	{
+		printf("Mail du nouveau client: ");
+		scanf("%79s", c.email);
+
+		if (strchr(c.email, '@') == NULL)
+		{
+			color(31);
+			printf("L'email doit contenir un @ !\n");
+			color(0);
+		}
+	} while (strchr(c.email, '@') == NULL);
 
 	for (i = 0; i < b->nbClients; i++)
 	{
@@ -66,20 +76,26 @@ int ajouterClient(Boutique* b)
 	printf("Prenom: ");
 	scanf("%s", c.prenom);
 
-	printf("Telephone: ");
-	scanf("%14s", c.telephone);
+	do
+	{
+		printf("Telephone: ");
+		scanf("%14s", c.telephone);
+	} while (VerifChiffres(c.telephone, 10) == 0);
 
 	printf("Rue: ");
-	scanf("%79[^\n]", c.adresse.rue);
+	scanf(" %79[^\n]", c.adresse.rue);
 
 	printf("Ville: ");
-	scanf("%49[^\n]", c.adresse.ville);
+	scanf(" %49[^\n]", c.adresse.ville);
 
-	printf("Code postal: ");
-	scanf("%5s", c.adresse.codePostal);
+	do
+	{
+		printf("Code postal: ");
+		scanf("%5s", c.adresse.codePostal);
+	} while (VerifChiffres(c.adresse.codePostal, 5) == 0);
 
 	printf("Pays: ");
-	scanf("%49[^\n]", c.adresse.pays);
+	scanf(" %49[^\n]", c.adresse.pays);
 
 	c.idClient = b->idClientSuivant;
 	b->idClientSuivant = b->idClientSuivant + 1;
@@ -110,7 +126,7 @@ int ajouterClient(Boutique* b)
 	b->nbClients = b->nbClients + 1;
 
 	color(32);
-	printf("Client ajoute avec succee !\n");
+	printf("Client ajoute avec succee !\n\n");
 	color(0);
 	return 1;
 
