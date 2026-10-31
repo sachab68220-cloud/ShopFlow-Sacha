@@ -167,6 +167,7 @@ void modifierClient(Boutique* b)
 {
 	int id;
 	int position;
+	char email[80];
 
 	system("cls");
 	color(96);
@@ -223,7 +224,6 @@ void modifierClient(Boutique* b)
 
 	do
 	{
-		char email[80];
 		printf("Nouvelle email: ");
 		scanf("%79s", email);
 
@@ -251,26 +251,59 @@ void modifierClient(Boutique* b)
 	do
 	{
 		printf("Nouveau telephone: ");
-		scanf("%14s", &b->clients[position].telephone);
+		scanf("%14s", b->clients[position].telephone);
 	} while (VerifChiffres(b->clients[position].telephone, 10) == 0);
 
 	printf("Nouvelle Rue: ");
-	scanf(" %79[^\n]", &b->clients[position].adresse.rue);
+	scanf(" %79[^\n]", b->clients[position].adresse.rue);
 
 	printf("Nouvelle ville: ");
-	scanf(" %49[^\n]", &b->clients[position].adresse.ville);
+	scanf(" %49[^\n]", b->clients[position].adresse.ville);
 
 	do
 	{
-		printf("Code postal: ");
-		scanf("%5s", &b->clients[position].adresse.codePostal);
+		printf("Nouveau code postal: ");
+		scanf("%5s", b->clients[position].adresse.codePostal);
 	} while (VerifChiffres(b->clients[position].adresse.codePostal, 5) == 0);
 
 	printf("Nouveau pays: ");
-	scanf(" %49[^\n]", &b->clients[position].adresse.pays);
+	scanf(" %49[^\n]", b->clients[position].adresse.pays);
 
 	color(32);
 	printf("Client modifie avec succes !\n\n");
 	color(0);
 	
+}
+
+
+
+void supprimerClient(Boutique* b)
+{
+	int id;
+	int position;
+
+	system("cls");
+	color(96);
+	printf("+--------------------------------------+\n");
+	printf("|         RECHERCHER DES CLIENTS       |\n");
+	printf("+--------------------------------------+\n\n");
+	color(0);
+
+	printf("Entrez l'ID du client a supprime: ");
+	scanf("%d", &id);
+
+	position = rechercheClient(b, id);
+
+	if (b->clients[position].actif == 0)
+	{
+		color(31);
+		printf("Ce client est deja supprime !\n\n");
+		color(0);
+		return;
+	}
+
+	b->clients[position].actif = 0;
+	color(32);
+	printf("Client supprime avec succes !\n\n");
+	color(0);
 }

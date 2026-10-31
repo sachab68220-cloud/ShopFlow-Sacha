@@ -170,6 +170,10 @@ int main(void)
             {
                 modifierClient(&boutique);
             }
+            else if (choix2 == 5)
+            {
+                supprimerClient(&boutique);
+            }
         }
 
         else if (choix == 3)
