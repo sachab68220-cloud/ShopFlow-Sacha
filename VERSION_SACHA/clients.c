@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "clients.h"
-#include "utils.c"
+#include "utils.h"
 
 void afficherClient(Boutique* b)
 {
@@ -30,4 +30,44 @@ void afficherClient(Boutique* b)
 		printf("Points de fidelites: %d\n", b->clients[i].pointsFidelite);
 		printf("Nombre de commande: %d\n", b->clients[i].nbCommandes);
 	}
+}
+
+
+
+void ajouterClient(Boutique* b)
+{
+	Client c;
+	int i;
+
+	system("cls");
+	color(96);
+	printf("+--------------------------------------+\n");
+	printf("|         CATALOGUE DES CLIENTS        |\n");
+	printf("+--------------------------------------+\n\n");
+	color(0);
+
+	printf("Mail du nouveau client: ");
+	scanf("%79s", c.email);
+
+	for (i = 0, i < b->nbClients; i++)
+	{
+		if (strcmp(b->clients[i].email, c.email) == 0)
+		{
+			color(31);
+			printf("Ce client existe deja !\n");
+			color(0);
+			return 0;
+		}
+	}
+
+	printf("Nom: ");
+	scanf("%s", c.nom);
+
+	printf("Prenom: ");
+	scanf("%s", c.prenom);
+
+	printf("Telephone: ");
+	scanf("%s", c.telephone);
+
+
 }
