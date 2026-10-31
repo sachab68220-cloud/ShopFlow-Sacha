@@ -35,7 +35,7 @@ typedef struct {
 
 typedef struct {
     int            numero;            /* unique, > 0 */
-    int            idClient;          /* doit exister */
+    int            idClient;          /* doit exister */    
     Date           dateCommande;
     char           statut[20];        /* EN_COURS, EXPEDIEE, LIVREE ou ANNULEE */
     int            nbLignes;
@@ -52,11 +52,11 @@ typedef struct {
 } Commande;
 
 typedef struct {
-    int       idClient;        /* unique, > 0 */
-    char      nom[50];
-    char      prenom[50];
-    char      email[80];       /* contient @, unique */
-    char      telephone[15];   /* 10 chiffres */
+    int       idClient;        /* unique, > 0 */      /*print*/
+    char      nom[50]; /*print*/
+    char      prenom[50]; /*print*/
+    char      email[80];       /* contient @, unique */ /*print*/
+    char      telephone[15];   /* 10 chiffres */ /*print*/
     Adresse   adresse;
     int       pointsFidelite;
     int       nbCommandes;

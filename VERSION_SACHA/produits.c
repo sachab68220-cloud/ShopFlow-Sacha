@@ -142,3 +142,110 @@ int rechercherProduit(Boutique* b, char* ref)
     return -1;
 }
 
+
+void modifierProduit(Boutique* b)
+{
+    char ref[12];
+    int position;
+
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|         RECHERCHER UN PRODUIT        |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    printf("Entrez la reference du produit que vous voulez modifie: ");
+    scanf("%11s", ref);
+    position = rechercherProduit(b, ref);
+
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|           MODIFIER UN PRODUIT        |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    if (position == -1)
+    {
+        return;
+    }
+
+    printf("Produit: %s - %s\n", b->produits[position].reference, b->produits[position].designation);
+    printf("Prix actuel: %.2f\n", b->produits[position].prixUnitaireHT);
+    printf("Stock actuel: %d\n", b->produits[position].quantiteStock);
+    printf("Seuil actuel: %d\n\n", b->produits[position].seuilAlerte);
+
+    do
+    {
+        printf("Nouveau prix: ");
+        scanf("%f", &b->produits[position].prixUnitaireHT);
+    } while (b->produits[position].prixUnitaireHT <= 0);
+
+    do
+    {
+        printf("Nouveau stock: ");
+        scanf("%d", &b->produits[position].quantiteStock);
+    } while (b->produits[position].quantiteStock <= 0);
+
+    do
+    {
+        printf("Nouveau seuil d'alerte: ");
+        scanf("%d", &b->produits[position].seuilAlerte);
+    } while (b->produits[position].seuilAlerte < 0);
+
+    color(32);
+    printf("Produit modifie avec succee !\n");
+    color(0);
+}
+
+
+void supprimerProduit(Boutique* b)
+{
+    char ref[12];
+    int position;
+
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|         RECHERCHER UN PRODUIT        |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    printf("Entrez la reference du produit que vous voulez modifie: ");
+    scanf("%11s", ref);
+    position = rechercherProduit(b, ref);
+
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|          SUPPRIMER UN PRODUIT        |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    if (position == -1)
+    {
+        return;
+    }
+
+    if (b->produits[position].actif == 0)
+    {
+        color(31);
+        printf("Ce produit est deja supprime !\n");
+        color(0);
+        return;
+    }
+
+    /*Refuser si le produit est dans une commande non annulé mais on le fera plus tard*/
+
+    b->produits[position].actif = 0;
+
+    color(32);
+    printf("Produit supprime avec succes !\n");
+    color(0);
+}
+

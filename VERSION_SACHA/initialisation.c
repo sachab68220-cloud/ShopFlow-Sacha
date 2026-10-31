@@ -33,4 +33,31 @@ void initialiserDonneesTest(Boutique* b)
         b->produits[b->nbProduits] = modele[i];
         b->nbProduits = b->nbProduits + 1;
     }
+
+
+    Client modeleClients[5] =
+    {
+        { 1, "Bernard", "Julie", "j.bernard@mail.fr", "0612345678",{ "12 rue de la Paix", "Paris", "75002", "France" }, 0, 0, 0, NULL, 1 },
+        { 2, "Martin", "Lucas", "l.martin@mail.fr", "0623456789",{ "5 avenue Foch", "Lyon", "69006", "France" }, 0, 0, 0, NULL, 1 },
+        { 3, "Durand", "Emma", "e.durand@mail.fr", "0634567890",{ "8 boulevard Victor", "Marseille", "13008", "France" }, 0, 0, 0, NULL, 1 },
+        { 4, "Petit", "Hugo", "h.petit@mail.fr", "0645678901",{ "21 rue Nationale", "Lille", "59000", "France" }, 0, 0, 0, NULL, 1 },
+        { 5, "Moreau", "Chloe", "c.moreau@mail.fr", "0656789012",{ "3 place du Capitole", "Toulouse", "31000", "France" }, 0, 0, 0, NULL, 1 },
+    };
+
+    b->capaciteClients = 8;
+    b->clients = malloc(b->capaciteClients * sizeof(Client));
+
+    if (b->clients == NULL)
+    {
+        printf("Erreur: manque de memoire\n");
+        return 1;
+    }
+    b->nbClients = 0;
+    for (i = 0; i < 5; i++)
+    {
+        b->clients[b->nbClients] = modeleClients[i];
+        b->nbClients = b->nbClients + 1;
+    }
+
+    b->idClientSuivant = 6;
 }

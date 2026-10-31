@@ -68,6 +68,14 @@ int main(void)
             {
                 ajouterProduit(&boutique);
             }
+            else if (choix2 == 3)
+            {
+                modifierProduit(&boutique);
+            }
+            else if (choix2 == 4)
+            {
+                supprimerProduit(&boutique);
+            }
             else if (choix2 == 5)
             {
                 char ref[12];
@@ -112,6 +120,11 @@ int main(void)
             printf("6. Retour\n\n");
             printf("Votre choix: ");
             scanf("%d", &choix2);
+
+            if (choix2 == 1)
+            {
+                afficherClient(&boutique);
+            }
         }
 
         else if (choix == 3)
