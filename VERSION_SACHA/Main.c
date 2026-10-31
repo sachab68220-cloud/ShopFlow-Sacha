@@ -125,6 +125,10 @@ int main(void)
             {
                 afficherClient(&boutique);
             }
+            else if (choix2 == 3)
+            {
+                ajouterClient(&boutique);
+            }
         }
 
         else if (choix == 3)
