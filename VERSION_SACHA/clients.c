@@ -294,6 +294,14 @@ void supprimerClient(Boutique* b)
 
 	position = rechercheClient(b, id);
 
+	if (position == -1)
+	{
+		color(32);
+		printf("Ce client n'existe pas !\n\n");
+		color(0);
+		return -1;
+	}
+
 	if (b->clients[position].actif == 0)
 	{
 		color(31);
@@ -301,6 +309,8 @@ void supprimerClient(Boutique* b)
 		color(0);
 		return;
 	}
+
+	/*A faire plus tard mais on peut pas supp un client avec une commande en cours*/
 
 	b->clients[position].actif = 0;
 	color(32);

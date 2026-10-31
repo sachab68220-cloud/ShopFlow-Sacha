@@ -104,6 +104,14 @@ int main(void)
                     printf("Stock: %d\n\n", boutique.produits[position].quantiteStock);
                 }
             }
+            else if (choix2 == 6)
+            {
+                continue;
+            }
+            else
+            {
+                printf("Valeur non prise en compte !\n\n");
+            }
         }
 
         else if (choix == 2)
@@ -173,6 +181,14 @@ int main(void)
             else if (choix2 == 5)
             {
                 supprimerClient(&boutique);
+            }
+            else if (choix2 == 6)
+            {
+                continue;
+            }
+            else
+            {
+                printf("Valeur non prise en compte !\n\n");
             }
         }
 
