@@ -2,4 +2,4 @@
 
 #include "types.h"
 
-
+void calculCommande(Commande* c);
