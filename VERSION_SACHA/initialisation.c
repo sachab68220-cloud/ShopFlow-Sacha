@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "initialisation.h"
+#include "commandes.h"
 
 void initialiserDonneesTest(Boutique* b)
 {
