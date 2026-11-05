@@ -8,6 +8,43 @@
 #include "initialisation.h"
 #include "utils.h"
 
+/* FONCTIONNALITE CREATIVE n2 : mode demonstration automatique.
+   Montre les principaux ecrans les uns apres les autres, sans rien taper
+   (juste une touche pour passer a l'ecran suivant). Pratique pour la soutenance. */
+void modeDemonstration(Boutique* b)
+{
+    afficherProduits(b);
+    system("pause");
+
+    afficherClient(b);
+    system("pause");
+
+    afficherDetailCommande(b, trouverCommande(b, 1001));   /* commande avec remise 5 % */
+    system("pause");
+
+    afficherDetailCommande(b, trouverCommande(b, 1003));   /* commande > 600 euros : remise 15 % */
+    system("pause");
+
+    afficherDetailCommande(b, trouverCommande(b, 1004));   /* commande < 60 euros : frais de port */
+    system("pause");
+
+    palmaresProduits(b);
+    system("pause");
+
+    palmaresClients(b);
+    system("pause");
+
+    alertesStock(b);
+    system("pause");
+
+    statistiquesCategories(b);
+
+    color(32);
+    printf("Fin de la demonstration !\n\n");
+    color(0);
+}
+
+
 int main(void)
 {
     Boutique boutique = { "ShopFlow", NULL, 0, 0, NULL, 0, 0, 1001, 1 };
@@ -39,26 +76,40 @@ int main(void)
         printf("2. Gestion des clients\n");
         printf("3. Gestion des commandes\n");
         printf("4. Statistiques de la boutique\n");
-        printf("5. Quitter\n\n");
+        printf("5. Mode demonstration\n");
+        printf("6. Quitter\n\n");
         printf("Votre choix: ");
-        scanf("%d", &choix);
+        choix = lireEntier();
 
         if (choix == 1)
         {
-            system("cls");
-            color(96);
-            printf("+--------------------------------------+\n");
-            printf("|               Sous-Menu              |\n");
-            printf("+--------------------------------------+\n\n");
-            color(0);
-            printf("1. Afficher le catalogue\n");
-            printf("2. Ajouter un produit\n");
-            printf("3. Modifier un produit\n");
-            printf("4. Supprimer un produit\n");
-            printf("5. Rechercher un produit\n");
-            printf("6. Retour\n\n");
-            printf("Votre choix: ");
-            scanf("%d", &choix2);
+            /* On reste dans le sous-menu tant que le choix n'est pas entre 1 et 7 */
+            do
+            {
+                system("cls");
+                color(96);
+                printf("+--------------------------------------+\n");
+                printf("|               Sous-Menu              |\n");
+                printf("+--------------------------------------+\n\n");
+                color(0);
+                printf("1. Afficher le catalogue\n");
+                printf("2. Ajouter un produit\n");
+                printf("3. Modifier un produit\n");
+                printf("4. Supprimer un produit\n");
+                printf("5. Rechercher un produit (reference)\n");
+                printf("6. Rechercher un produit (mot-cle)\n");
+                printf("7. Retour\n\n");
+                printf("Votre choix: ");
+                choix2 = lireEntier();
+
+                if (choix2 < 1 || choix2 > 7)
+                {
+                    color(31);
+                    printf("Valeur non prise en compte !\n");
+                    color(0);
+                    system("pause");
+                }
+            } while (choix2 < 1 || choix2 > 7);
 
             if (choix2 == 1)
             {
@@ -106,30 +157,41 @@ int main(void)
             }
             else if (choix2 == 6)
             {
-                continue;
+                rechercherProduitMotCle(&boutique);
             }
-            else
+            else if (choix2 == 7)
             {
-                printf("Valeur non prise en compte !\n\n");
+                continue;
             }
         }
 
         else if (choix == 2)
         {
-            system("cls");
-            color(96);
-            printf("+--------------------------------------+\n");
-            printf("|               Sous-Menu              |\n");
-            printf("+--------------------------------------+\n\n");
-            color(0);
-            printf("1. Afficher la liste des clients\n");
-            printf("2. Afficher un client\n");
-            printf("3. Ajouter un client\n");
-            printf("4. Modifier un client\n");
-            printf("5. Supprimer un client\n");
-            printf("6. Retour\n\n");
-            printf("Votre choix: ");
-            scanf("%d", &choix2);
+            do
+            {
+                system("cls");
+                color(96);
+                printf("+--------------------------------------+\n");
+                printf("|               Sous-Menu              |\n");
+                printf("+--------------------------------------+\n\n");
+                color(0);
+                printf("1. Afficher la liste des clients\n");
+                printf("2. Afficher un client\n");
+                printf("3. Ajouter un client\n");
+                printf("4. Modifier un client\n");
+                printf("5. Supprimer un client\n");
+                printf("6. Retour\n\n");
+                printf("Votre choix: ");
+                choix2 = lireEntier();
+
+                if (choix2 < 1 || choix2 > 6)
+                {
+                    color(31);
+                    printf("Valeur non prise en compte !\n");
+                    color(0);
+                    system("pause");
+                }
+            } while (choix2 < 1 || choix2 > 6);
 
             if (choix2 == 1)
             {
@@ -137,38 +199,7 @@ int main(void)
             }
             else if (choix2 == 2)
             {
-                system("cls");
-                color(96);
-                printf("+--------------------------------------+\n");
-                printf("|         RECHERCHER DES CLIENTS       |\n");
-                printf("+--------------------------------------+\n\n");
-                color(0);
-
-                int id;
-                int position;
-
-                printf("Entrez l'ID du client: ");
-                scanf("%d", &id);
-
-                position = rechercheClient(&boutique, id);
-
-                if (position != -1)
-                {
-                    color(32);
-                    printf("Position trouve !\n\n");
-                    color(0);
-                    printf("Client n%d: %s %s\n", boutique.clients[position].idClient, boutique.clients[position].nom, boutique.clients[position].prenom);
-                       printf("Email: %s\n", boutique.clients[position].email);
-                    printf("Telephone: %s\n", boutique.clients[position].telephone);
-                    printf("Rue: %s\n", boutique.clients[position].adresse.rue);
-                    printf("Ville: %s\n", boutique.clients[position].adresse.ville);
-                    printf("Code Postal: %s\n", boutique.clients[position].adresse.codePostal);
-                    printf("Pays: %s\n", boutique.clients[position].adresse.pays);
-                    color(32);
-                    printf("Points de fidelite: %d\n", boutique.clients[position].pointsFidelite);
-                    color(0);
-                    printf("Nombre de commandes: %d\n\n", boutique.clients[position].nbCommandes);
-                }
+                afficherUnClient(&boutique);
             }
             else if (choix2 == 3)
             {
@@ -186,49 +217,127 @@ int main(void)
             {
                 continue;
             }
-            else
-            {
-                printf("Valeur non prise en compte !\n\n");
-            }
         }
 
         else if (choix == 3)
         {
-            system("cls");
-            color(96);
-            printf("+--------------------------------------+\n");
-            printf("|               Sous-Menu              |\n");
-            printf("+--------------------------------------+\n\n");
-            color(0);
-            printf("1. Creer une commande\n");
-            printf("2. Afficher une commande\n");
-            printf("3. Ajouter une ligne\n");
-            printf("4. Supprimer une ligne\n");
-            printf("5. Changer le statut\n");
-            printf("6. Annuler une commande\n");
-            printf("7. Retour\n\n");
-            printf("Votre choix: ");
-            scanf("%d", &choix2);
+            do
+            {
+                system("cls");
+                color(96);
+                printf("+--------------------------------------+\n");
+                printf("|               Sous-Menu              |\n");
+                printf("+--------------------------------------+\n\n");
+                color(0);
+                printf("1. Creer une commande\n");
+                printf("2. Afficher une commande\n");
+                printf("3. Ajouter une ligne\n");
+                printf("4. Supprimer une ligne\n");
+                printf("5. Changer le statut\n");
+                printf("6. Annuler une commande\n");
+                printf("7. Retour\n\n");
+                printf("Votre choix: ");
+                choix2 = lireEntier();
+
+                if (choix2 < 1 || choix2 > 7)
+                {
+                    color(31);
+                    printf("Valeur non prise en compte !\n");
+                    color(0);
+                    system("pause");
+                }
+            } while (choix2 < 1 || choix2 > 7);
+
+            if (choix2 == 1)
+            {
+                creerCommande(&boutique);
+            }
+            else if (choix2 == 2)
+            {
+                afficherCommande(&boutique);
+            }
+            else if (choix2 == 3)
+            {
+                ajouterLigneCommande(&boutique);
+            }
+            else if (choix2 == 4)
+            {
+                supprimerLigneCommande(&boutique);
+            }
+            else if (choix2 == 5)
+            {
+                changerStatut(&boutique);
+            }
+            else if (choix2 == 6)
+            {
+                annulerCommande(&boutique);
+            }
+            else if (choix2 == 7)
+            {
+                continue;
+            }
         }
 
         else if (choix == 4)
         {
-            system("cls");
-            color(96);
-            printf("+--------------------------------------+\n");
-            printf("|               Sous-Menu              |\n");
-            printf("+--------------------------------------+\n\n");
-            color(0);
-            printf("1. Chiffre d'affaires\n");
-            printf("2. Palmares produits\n");
-            printf("3. Palmares clients\n");
-            printf("4. Alertes de stock\n");
-            printf("5. Retour\n\n");
-            printf("Votre choix: ");
-            scanf("%d", &choix2);
+            do
+            {
+                system("cls");
+                color(96);
+                printf("+--------------------------------------+\n");
+                printf("|               Sous-Menu              |\n");
+                printf("+--------------------------------------+\n\n");
+                color(0);
+                printf("1. Chiffre d'affaires\n");
+                printf("2. Palmares produits\n");
+                printf("3. Palmares clients\n");
+                printf("4. Alertes de stock\n");
+                printf("5. Statistiques par categorie\n");
+                printf("6. Retour\n\n");
+                printf("Votre choix: ");
+                choix2 = lireEntier();
+
+                if (choix2 < 1 || choix2 > 6)
+                {
+                    color(31);
+                    printf("Valeur non prise en compte !\n");
+                    color(0);
+                    system("pause");
+                }
+            } while (choix2 < 1 || choix2 > 6);
+
+            if (choix2 == 1)
+            {
+                chiffreAffaires(&boutique);
+            }
+            else if (choix2 == 2)
+            {
+                palmaresProduits(&boutique);
+            }
+            else if (choix2 == 3)
+            {
+                palmaresClients(&boutique);
+            }
+            else if (choix2 == 4)
+            {
+                alertesStock(&boutique);
+            }
+            else if (choix2 == 5)
+            {
+                statistiquesCategories(&boutique);
+            }
+            else if (choix2 == 6)
+            {
+                continue;
+            }
         }
 
         else if (choix == 5)
+        {
+            modeDemonstration(&boutique);
+        }
+
+        else if (choix == 6)
         {
             printf("Au revoir !\n");
         }
@@ -239,13 +348,14 @@ int main(void)
             printf("Valeur non prise en compte !\n");
         }
 
-        if (choix != 5)
+        if (choix != 6)
         {
             system("pause");
         }
 
-    } while (choix != 5);
+    } while (choix != 6);
 
-    free(boutique.produits); 
+    /* On libere toute la memoire (lignes, commandes, clients, produits) */
+    detruireBoutique(&boutique);
     return 0;
 }

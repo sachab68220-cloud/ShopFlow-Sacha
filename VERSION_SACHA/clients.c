@@ -2,7 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include "clients.h"
+#include "commandes.h"
 #include "utils.h"
+
+/* Chiffre d'affaires HT genere par un client (commandes non annulees) */
+float chiffreAffairesClient(Client* client)
+{
+	int i;
+	float total = 0;
+
+	for (i = 0; i < client->nbCommandes; i++)
+	{
+		if (strcmp(client->commandes[i].statut, "ANNULEE") != 0)
+		{
+			total = total + client->commandes[i].montantHT;
+		}
+	}
+
+	return total;
+}
 
 void afficherClient(Boutique* b)
 {
@@ -29,7 +47,75 @@ void afficherClient(Boutique* b)
 		printf("Adresse: %s, %s, %s, %s\n", b->clients[i].adresse.rue, b->clients[i].adresse.ville, b->clients[i].adresse.codePostal, b->clients[i].adresse.pays);
 		printf("Points de fidelites: %d\n", b->clients[i].pointsFidelite);
 		printf("Nombre de commande: %d\n", b->clients[i].nbCommandes);
+		printf("Chiffre d'affaires genere: %.2f euros HT\n", chiffreAffairesClient(&b->clients[i]));
 	}
+	printf("----------------------------------------------------------\n\n");
+}
+
+
+
+/* Fiche detaillee d'un client avec l'historique de ses commandes */
+void afficherUnClient(Boutique* b)
+{
+	int id;
+	int position;
+	int i;
+	Commande* c;
+
+	system("cls");
+	color(96);
+	printf("+--------------------------------------+\n");
+	printf("|         RECHERCHER DES CLIENTS       |\n");
+	printf("+--------------------------------------+\n\n");
+	color(0);
+
+	printf("Entrez l'ID du client: ");
+	id = lireEntier();
+
+	position = rechercheClient(b, id);
+
+	if (position == -1)
+	{
+		return;
+	}
+
+	color(32);
+	printf("Client trouve !\n\n");
+	color(0);
+	printf("Client n%d: %s %s", b->clients[position].idClient, b->clients[position].nom, b->clients[position].prenom);
+	if (b->clients[position].actif == 0)
+	{
+		color(31);
+		printf(" (supprime)");
+		color(0);
+	}
+	printf("\n");
+	printf("Email: %s\n", b->clients[position].email);
+	printf("Telephone: %s\n", b->clients[position].telephone);
+	printf("Rue: %s\n", b->clients[position].adresse.rue);
+	printf("Ville: %s\n", b->clients[position].adresse.ville);
+	printf("Code Postal: %s\n", b->clients[position].adresse.codePostal);
+	printf("Pays: %s\n", b->clients[position].adresse.pays);
+	color(32);
+	printf("Points de fidelite: %d\n", b->clients[position].pointsFidelite);
+	color(0);
+	printf("Chiffre d'affaires genere: %.2f euros HT\n\n", chiffreAffairesClient(&b->clients[position]));
+
+	/* Historique des commandes */
+	printf("Historique des commandes (%d):\n", b->clients[position].nbCommandes);
+	printf("----------------------------------------------------------\n");
+
+	if (b->clients[position].nbCommandes == 0)
+	{
+		printf("Aucune commande.\n");
+	}
+
+	for (i = 0; i < b->clients[position].nbCommandes; i++)
+	{
+		c = &b->clients[position].commandes[i];
+		printf("n%d  %02d/%02d/%d  %-9s  %d ligne(s)  %8.2f euros TTC\n", c->numero, c->dateCommande.jour, c->dateCommande.mois, c->dateCommande.annee, c->statut, c->nbLignes, c->montantTTC);
+	}
+	printf("----------------------------------------------------------\n\n");
 }
 
 
@@ -71,10 +157,10 @@ int ajouterClient(Boutique* b)
 	}
 
 	printf("Nom: ");
-	scanf("%s", c.nom);
+	scanf(" %49[^\n]", c.nom);
 
 	printf("Prenom: ");
-	scanf("%s", c.prenom);
+	scanf(" %49[^\n]", c.prenom);
 
 	do
 	{
@@ -177,7 +263,7 @@ void modifierClient(Boutique* b)
 	color(0);
 
 	printf("Entrez l'ID du client que vous voulez modifie: ");
-	scanf("%d", &id);
+	id = lireEntier();
 	
 	position = rechercheClient(b, id);
 
@@ -217,10 +303,10 @@ void modifierClient(Boutique* b)
 	printf("----------------------------------------------------------\n\n");
 
 	printf("Nouveau nom: ");
-	scanf("%s", &b->clients[position].nom);
+	scanf(" %49[^\n]", b->clients[position].nom);
 
 	printf("Nouveau prenom: ");
-	scanf("%s", &b->clients[position].prenom);
+	scanf(" %49[^\n]", b->clients[position].prenom);
 
 	do
 	{
@@ -290,16 +376,13 @@ void supprimerClient(Boutique* b)
 	color(0);
 
 	printf("Entrez l'ID du client a supprime: ");
-	scanf("%d", &id);
+	id = lireEntier();
 
 	position = rechercheClient(b, id);
 
 	if (position == -1)
 	{
-		color(32);
-		printf("Ce client n'existe pas !\n\n");
-		color(0);
-		return -1;
+		return;
 	}
 
 	if (b->clients[position].actif == 0)
@@ -310,7 +393,14 @@ void supprimerClient(Boutique* b)
 		return;
 	}
 
-	/*A faire plus tard mais on peut pas supp un client avec une commande en cours*/
+	/* Refuse si le client a des commandes non annulees */
+	if (clientACommandeActive(&b->clients[position]) == 1)
+	{
+		color(31);
+		printf("Impossible : ce client a des commandes non annulees !\n\n");
+		color(0);
+		return;
+	}
 
 	b->clients[position].actif = 0;
 	color(32);

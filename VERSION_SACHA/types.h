@@ -65,7 +65,8 @@ typedef struct {
     int       actif;           /* 0 ou 1 */
 } Client;
 
-typedef struct {
+typedef struct 
+{
     char     nom[50];
     Produit *produits;         /* tableau dynamique */
     int      nbProduits;
