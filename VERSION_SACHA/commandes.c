@@ -5,7 +5,6 @@
 #include "produits.h"
 #include "utils.h"
 
-/* Calcule tous les montants d'une commande a partir de ses lignes */
 void calculCommande(Commande* c)
 {
 	c->montantBrutHT = 0;
@@ -55,8 +54,6 @@ void calculCommande(Commande* c)
 
 
 
-/* Renvoie la case du client qui a cet id, ou -1.
-   Contrairement a rechercheClient, elle n'affiche rien a l'ecran. */
 int positionClient(Boutique* b, int id)
 {
 	int i;
@@ -74,8 +71,6 @@ int positionClient(Boutique* b, int id)
 
 
 
-/* Cherche une commande par son numero dans les fiches de tous les clients.
-   Renvoie l'adresse de la commande, ou NULL si elle n'existe pas. */
 Commande* trouverCommande(Boutique* b, int numero)
 {
 	int i;
@@ -97,9 +92,6 @@ Commande* trouverCommande(Boutique* b, int numero)
 
 
 
-/* Calcule les montants puis range la commande dans la fiche du client.
-   Donne aussi les points de fidelite (1 point par tranche de 10 euros TTC).
-   Renvoie 1 si c'est bon, 0 s'il n'y a plus de memoire. */
 int rattacherCommande(Client* client, Commande c)
 {
 	calculCommande(&c);
@@ -134,7 +126,6 @@ int rattacherCommande(Client* client, Commande c)
 
 
 
-/* Remet en stock toutes les quantites d'une commande (annulation) */
 void remettreStock(Boutique* b, Commande* c)
 {
 	int i;
@@ -153,10 +144,6 @@ void remettreStock(Boutique* b, Commande* c)
 
 
 
-/* Demande un produit et une quantite, puis l'ajoute dans la commande.
-   Le stock est retire tout de suite : comme ca, si on reprend le meme produit,
-   le controle porte automatiquement sur la quantite cumulee.
-   Renvoie 1 si la ligne a ete ajoutee, 0 sinon. */
 int saisirLigne(Boutique* b, Commande* c)
 {
 	char ref[12];
@@ -209,7 +196,6 @@ int saisirLigne(Boutique* b, Commande* c)
 		}
 	} while (quantite < 1 || quantite > b->produits[pos].quantiteStock);
 
-	/* Le produit est-il deja dans la commande ? (pas deux lignes pour le meme produit) */
 	for (i = 0; i < c->nbLignes; i++)
 	{
 		if (strcmp(c->lignes[i].refProduit, ref) == 0)
@@ -241,7 +227,6 @@ int saisirLigne(Boutique* b, Commande* c)
 			c->capaciteLignes = c->capaciteLignes + 5;
 		}
 
-		/* On recopie le nom et le prix du jour : ils restent figes dans la commande */
 		strcpy(c->lignes[c->nbLignes].refProduit, b->produits[pos].reference);
 		strcpy(c->lignes[c->nbLignes].designation, b->produits[pos].designation);
 		c->lignes[c->nbLignes].quantite = quantite;
@@ -259,7 +244,6 @@ int saisirLigne(Boutique* b, Commande* c)
 
 
 
-/* Renvoie 1 si le produit est dans au moins une commande non annulee */
 int produitDansCommande(Boutique* b, char* ref)
 {
 	int i;
@@ -290,7 +274,6 @@ int produitDansCommande(Boutique* b, char* ref)
 
 
 
-/* Renvoie 1 si le client a au moins une commande non annulee */
 int clientACommandeActive(Client* client)
 {
 	int i;
@@ -322,7 +305,6 @@ void creerCommande(Boutique* b)
 	printf("+--------------------------------------+\n\n");
 	color(0);
 
-	/* 1. Le client */
 	printf("ID du client: ");
 	id = lireEntier();
 	posClient = positionClient(b, id);
@@ -337,7 +319,6 @@ void creerCommande(Boutique* b)
 
 	printf("Client: %s %s\n\n", b->clients[posClient].nom, b->clients[posClient].prenom);
 
-	/* 2. La date */
 	do
 	{
 		printf("Date de la commande (jour mois annee, ex: 5 11 2026): ");
@@ -353,7 +334,6 @@ void creerCommande(Boutique* b)
 		}
 	} while (dateValide(c.dateCommande.jour, c.dateCommande.mois, c.dateCommande.annee) == 0);
 
-	/* 3. Les informations de base */
 	c.numero = b->numeroSuivant;
 	c.idClient = id;
 	strcpy(c.statut, "EN_COURS");
@@ -371,7 +351,6 @@ void creerCommande(Boutique* b)
 		return;
 	}
 
-	/* 4. Les N lignes : on en ajoute tant que l'utilisateur veut continuer */
 	do
 	{
 		saisirLigne(b, &c);
@@ -389,7 +368,6 @@ void creerCommande(Boutique* b)
 		return;
 	}
 
-	/* 5. On range la commande dans la fiche du client */
 	if (rattacherCommande(&b->clients[posClient], c) == 0)
 	{
 		remettreStock(b, &c);
@@ -408,7 +386,6 @@ void creerCommande(Boutique* b)
 
 
 
-/* Affiche tout le detail d'une commande (sans rien demander) */
 void afficherDetailCommande(Boutique* b, Commande* c)
 {
 	int i;
@@ -524,7 +501,6 @@ void ajouterLigneCommande(Boutique* b)
 	{
 		calculCommande(c);
 
-		/* Les points suivent le nouveau total */
 		posClient = positionClient(b, c->idClient);
 		b->clients[posClient].pointsFidelite = b->clients[posClient].pointsFidelite - ancienPoints + (int)(c->montantTTC / 10);
 
@@ -591,23 +567,20 @@ void supprimerLigneCommande(Boutique* b)
 		choix = lireEntier();
 	} while (choix < 1 || choix > c->nbLignes);
 
-	choix = choix - 1;   /* la ligne 1 est dans la case 0 */
+	choix = choix - 1;
 
-	/* 1. On remet le stock */
 	pos = indexProduit(b, c->lignes[choix].refProduit);
 	if (pos != -1)
 	{
 		b->produits[pos].quantiteStock = b->produits[pos].quantiteStock + c->lignes[choix].quantite;
 	}
 
-	/* 2. On decale les lignes suivantes d'une case vers la gauche pour boucher le trou */
 	for (i = choix; i < c->nbLignes - 1; i++)
 	{
 		c->lignes[i] = c->lignes[i + 1];
 	}
 	c->nbLignes = c->nbLignes - 1;
 
-	/* 3. On recalcule les montants et les points */
 	ancienPoints = (int)(c->montantTTC / 10);
 	calculCommande(c);
 
@@ -647,7 +620,6 @@ void changerStatut(Boutique* b)
 		return;
 	}
 
-	/* Progression autorisee : EN_COURS -> EXPEDIEE -> LIVREE, sans retour */
 	if (strcmp(c->statut, "EN_COURS") == 0)
 	{
 		strcpy(c->statut, "EXPEDIEE");
@@ -704,10 +676,8 @@ void annulerCommande(Boutique* b)
 		return;
 	}
 
-	/* 1. Le stock revient dans le catalogue */
 	remettreStock(b, c);
 
-	/* 2. On retire les points de fidelite gagnes avec cette commande */
 	posClient = positionClient(b, c->idClient);
 	b->clients[posClient].pointsFidelite = b->clients[posClient].pointsFidelite - (int)(c->montantTTC / 10);
 
@@ -716,7 +686,6 @@ void annulerCommande(Boutique* b)
 		b->clients[posClient].pointsFidelite = 0;
 	}
 
-	/* 3. Nouveau statut */
 	strcpy(c->statut, "ANNULEE");
 
 	color(32);

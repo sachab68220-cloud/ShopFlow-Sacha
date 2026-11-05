@@ -24,7 +24,6 @@ void afficherProduits(Boutique* b)
             continue;
         }
 
-        /* Valorisation du stock = prix x quantite, pour chaque produit */
         valeurStock = valeurStock + b->produits[i].prixUnitaireHT * b->produits[i].quantiteStock;
 
         printf("----------------------------------------------------------\n");
@@ -169,7 +168,6 @@ int rechercherProduit(Boutique* b, char* ref)
 }
 
 
-/* Comme rechercherProduit, mais n'affiche rien : sert dans les commandes */
 int indexProduit(Boutique* b, char* ref)
 {
     int i;
@@ -186,8 +184,6 @@ int indexProduit(Boutique* b, char* ref)
 }
 
 
-/* Affiche tous les produits dont la designation contient le mot tape.
-   strstr(texte, mot) renvoie NULL si le mot n'est pas dans le texte. */
 void rechercherProduitMotCle(Boutique* b)
 {
     char mot[60];
@@ -322,7 +318,6 @@ void supprimerProduit(Boutique* b)
         return;
     }
 
-    /* Refuse si le produit est dans une commande non annulee */
     if (produitDansCommande(b, b->produits[position].reference) == 1)
     {
         color(31);

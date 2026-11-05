@@ -5,7 +5,6 @@
 #include "commandes.h"
 #include "utils.h"
 
-/* Chiffre d'affaires HT genere par un client (commandes non annulees) */
 float chiffreAffairesClient(Client* client)
 {
 	int i;
@@ -54,7 +53,6 @@ void afficherClient(Boutique* b)
 
 
 
-/* Fiche detaillee d'un client avec l'historique de ses commandes */
 void afficherUnClient(Boutique* b)
 {
 	int id;
@@ -101,7 +99,6 @@ void afficherUnClient(Boutique* b)
 	color(0);
 	printf("Chiffre d'affaires genere: %.2f euros HT\n\n", chiffreAffairesClient(&b->clients[position]));
 
-	/* Historique des commandes */
 	printf("Historique des commandes (%d):\n", b->clients[position].nbCommandes);
 	printf("----------------------------------------------------------\n");
 
@@ -393,7 +390,6 @@ void supprimerClient(Boutique* b)
 		return;
 	}
 
-	/* Refuse si le client a des commandes non annulees */
 	if (clientACommandeActive(&b->clients[position]) == 1)
 	{
 		color(31);

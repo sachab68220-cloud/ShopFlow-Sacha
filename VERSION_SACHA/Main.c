@@ -8,9 +8,6 @@
 #include "initialisation.h"
 #include "utils.h"
 
-/* FONCTIONNALITE CREATIVE n2 : mode demonstration automatique.
-   Montre les principaux ecrans les uns apres les autres, sans rien taper
-   (juste une touche pour passer a l'ecran suivant). Pratique pour la soutenance. */
 void modeDemonstration(Boutique* b)
 {
     afficherProduits(b);
@@ -19,13 +16,13 @@ void modeDemonstration(Boutique* b)
     afficherClient(b);
     system("pause");
 
-    afficherDetailCommande(b, trouverCommande(b, 1001));   /* commande avec remise 5 % */
+    afficherDetailCommande(b, trouverCommande(b, 1001));
     system("pause");
 
-    afficherDetailCommande(b, trouverCommande(b, 1003));   /* commande > 600 euros : remise 15 % */
+    afficherDetailCommande(b, trouverCommande(b, 1003));
     system("pause");
 
-    afficherDetailCommande(b, trouverCommande(b, 1004));   /* commande < 60 euros : frais de port */
+    afficherDetailCommande(b, trouverCommande(b, 1004));
     system("pause");
 
     palmaresProduits(b);
@@ -83,7 +80,6 @@ int main(void)
 
         if (choix == 1)
         {
-            /* On reste dans le sous-menu tant que le choix n'est pas entre 1 et 7 */
             do
             {
                 system("cls");
@@ -355,7 +351,6 @@ int main(void)
 
     } while (choix != 6);
 
-    /* On libere toute la memoire (lignes, commandes, clients, produits) */
     detruireBoutique(&boutique);
     return 0;
 }

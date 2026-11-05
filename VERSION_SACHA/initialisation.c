@@ -4,7 +4,6 @@
 #include "initialisation.h"
 #include "commandes.h"
 
-/* Cree une commande vide (sans lignes) */
 Commande creerCommandeTest(int numero, int idClient, int jour, int mois, int annee, char* statut)
 {
     Commande c;
@@ -29,7 +28,6 @@ Commande creerCommandeTest(int numero, int idClient, int jour, int mois, int ann
     return c;
 }
 
-/* Ajoute une ligne (un produit + une quantite) dans la commande */
 void ajouterLigneTest(Commande* c, Produit p, int quantite)
 {
     LigneCommande l;
@@ -43,7 +41,6 @@ void ajouterLigneTest(Commande* c, Produit p, int quantite)
     c->nbLignes = c->nbLignes + 1;
 }
 
-/* Copie l'adresse du client dans la commande, puis la range dans sa fiche */
 void rattacherCommandeTest(Client* client, Commande c)
 {
     c.adresseLivraison = client->adresse;
@@ -59,7 +56,6 @@ void initialiserDonneesTest(Boutique* b)
 {
 	int i;
 
-    /* Le f apres le nombre veut dire "float" (sinon C le prend pour un double) */
     Produit modele[8] =
     {
         { "PRD-0001", "Clavier mecanique",  "Informatique",  79.90f,  42, 10, 1 },
@@ -115,54 +111,43 @@ void initialiserDonneesTest(Boutique* b)
     b->idClientSuivant = 6;
 
 
-    /* ---------- Commandes de test ----------
-       Ce sont des ventes "passees" : les stocks ci-dessus sont deja ceux d'apres ces ventes,
-       donc on ne les diminue pas ici. */
     Commande c;
 
-    /* Commande 1001 : Julie Bernard, 3 lignes, LIVREE */
     c = creerCommandeTest(1001, 1, 12, 3, 2026, "LIVREE");
-    ajouterLigneTest(&c, b->produits[0], 1);   /* Clavier mecanique x1 */
-    ajouterLigneTest(&c, b->produits[1], 2);   /* Souris sans fil x2   */
-    ajouterLigneTest(&c, b->produits[5], 3);   /* Cable HDMI x3        */
+    ajouterLigneTest(&c, b->produits[0], 1);
+    ajouterLigneTest(&c, b->produits[1], 2);
+    ajouterLigneTest(&c, b->produits[5], 3);
     rattacherCommandeTest(&b->clients[0], c);
 
-    /* Commande 1002 : Lucas Martin, 3 lignes, LIVREE */
     c = creerCommandeTest(1002, 2, 2, 4, 2026, "LIVREE");
-    ajouterLigneTest(&c, b->produits[2], 2);   /* Ecran 27 pouces x2   */
-    ajouterLigneTest(&c, b->produits[7], 1);   /* Disque SSD x1        */
-    ajouterLigneTest(&c, b->produits[3], 1);   /* Casque audio x1      */
+    ajouterLigneTest(&c, b->produits[2], 2);
+    ajouterLigneTest(&c, b->produits[7], 1);
+    ajouterLigneTest(&c, b->produits[3], 1);
     rattacherCommandeTest(&b->clients[1], c);
 
-    /* Commande 1003 : Emma Durand, 2 lignes, EXPEDIEE (plus de 600 euros HT -> 15 %) */
     c = creerCommandeTest(1003, 3, 15, 5, 2026, "EXPEDIEE");
-    ajouterLigneTest(&c, b->produits[2], 3);   /* Ecran 27 pouces x3   */
-    ajouterLigneTest(&c, b->produits[7], 1);   /* Disque SSD x1        */
+    ajouterLigneTest(&c, b->produits[2], 3);
+    ajouterLigneTest(&c, b->produits[7], 1);
     rattacherCommandeTest(&b->clients[2], c);
 
-    /* Commande 1004 : Julie Bernard, 1 ligne, EN_COURS (moins de 60 euros -> frais de port) */
     c = creerCommandeTest(1004, 1, 1, 6, 2026, "EN_COURS");
-    ajouterLigneTest(&c, b->produits[5], 2);   /* Cable HDMI x2        */
+    ajouterLigneTest(&c, b->produits[5], 2);
     rattacherCommandeTest(&b->clients[0], c);
 
-    /* Commande 1005 : Hugo Petit, 2 lignes, ANNULEE */
     c = creerCommandeTest(1005, 4, 10, 6, 2026, "ANNULEE");
-    ajouterLigneTest(&c, b->produits[4], 1);   /* Enceinte Bluetooth x1 */
-    ajouterLigneTest(&c, b->produits[6], 1);   /* Hub USB-C x1          */
+    ajouterLigneTest(&c, b->produits[4], 1);
+    ajouterLigneTest(&c, b->produits[6], 1);
     rattacherCommandeTest(&b->clients[3], c);
 
-    /* Commande 1006 : Chloe Moreau, 2 lignes, EN_COURS */
     c = creerCommandeTest(1006, 5, 20, 6, 2026, "EN_COURS");
-    ajouterLigneTest(&c, b->produits[3], 1);   /* Casque audio x1      */
-    ajouterLigneTest(&c, b->produits[1], 1);   /* Souris sans fil x1   */
+    ajouterLigneTest(&c, b->produits[3], 1);
+    ajouterLigneTest(&c, b->produits[1], 1);
     rattacherCommandeTest(&b->clients[4], c);
 
     b->numeroSuivant = 1007;
 }
 
 
-/* Libere toute la memoire, du plus petit au plus grand :
-   lignes de chaque commande -> commandes de chaque client -> clients -> produits */
 void detruireBoutique(Boutique* b)
 {
     int i;

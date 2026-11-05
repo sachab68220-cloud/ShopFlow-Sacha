@@ -5,7 +5,6 @@
 #include "clients.h"
 #include "utils.h"
 
-/* Nombre d'exemplaires vendus d'un produit (commandes non annulees) */
 int quantiteVendue(Boutique* b, char* ref)
 {
 	int i;
@@ -37,7 +36,6 @@ int quantiteVendue(Boutique* b, char* ref)
 
 
 
-/* Montant HT (avant remise) des ventes d'un produit (commandes non annulees) */
 float montantVendu(Boutique* b, char* ref)
 {
 	int i;
@@ -69,7 +67,6 @@ float montantVendu(Boutique* b, char* ref)
 
 
 
-/* CA total de la boutique, puis CA mois par mois pour une annee choisie */
 void chiffreAffaires(Boutique* b)
 {
 	int i;
@@ -91,7 +88,6 @@ void chiffreAffaires(Boutique* b)
 	printf("+--------------------------------------+\n\n");
 	color(0);
 
-	/* 1. Total de toutes les commandes non annulees */
 	for (i = 0; i < b->nbClients; i++)
 	{
 		for (j = 0; j < b->clients[i].nbCommandes; j++)
@@ -113,7 +109,6 @@ void chiffreAffaires(Boutique* b)
 	printf("CA total TTC: %10.2f euros\n\n", totalTTC);
 	color(0);
 
-	/* 2. Par periode : une case par mois (janvier = case 0) */
 	printf("Voir le detail de quelle annee ? ");
 	annee = lireEntier();
 
@@ -147,10 +142,6 @@ void chiffreAffaires(Boutique* b)
 
 
 
-/* Top 5 des produits les plus vendus (en quantite).
-   Methode : on calcule la quantite de chaque produit dans un tableau,
-   puis 5 fois de suite on cherche le plus grand, on l'affiche et on le met a -1
-   pour ne pas le reprendre au tour suivant. */
 void palmaresProduits(Boutique* b)
 {
 	int i;
@@ -191,7 +182,7 @@ void palmaresProduits(Boutique* b)
 			}
 		}
 
-		if (meilleur == -1)   /* plus aucun produit vendu */
+		if (meilleur == -1)
 		{
 			break;
 		}
@@ -206,7 +197,6 @@ void palmaresProduits(Boutique* b)
 
 
 
-/* Classement de tous les clients par chiffre d'affaires HT (meme methode) */
 void palmaresClients(Boutique* b)
 {
 	int i;
@@ -257,7 +247,6 @@ void palmaresClients(Boutique* b)
 
 
 
-/* Produits dont le stock est inferieur ou egal au seuil d'alerte */
 void alertesStock(Boutique* b)
 {
 	int i;
@@ -299,10 +288,6 @@ void alertesStock(Boutique* b)
 
 
 
-/* FONCTIONNALITE CREATIVE n1 : statistiques par categorie.
-   Pour chaque categorie : nombre de produits, articles vendus, ventes HT et valeur du stock.
-   Pour ne traiter chaque categorie qu'une fois, on saute un produit si un produit
-   AVANT lui a deja la meme categorie. */
 void statistiquesCategories(Boutique* b)
 {
 	int i;
@@ -325,7 +310,6 @@ void statistiquesCategories(Boutique* b)
 
 	for (i = 0; i < b->nbProduits; i++)
 	{
-		/* Categorie deja affichee ? */
 		dejaVue = 0;
 		for (j = 0; j < i; j++)
 		{
@@ -340,7 +324,6 @@ void statistiquesCategories(Boutique* b)
 			continue;
 		}
 
-		/* On additionne tous les produits de cette categorie */
 		nbProduits = 0;
 		vendus = 0;
 		ventes = 0;

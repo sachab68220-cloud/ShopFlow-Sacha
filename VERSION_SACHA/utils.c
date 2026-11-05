@@ -27,9 +27,6 @@ int VerifChiffres(char* texte, int longueur)
     return 1;
 }
 
-/* Lit un nombre entier au clavier.
-   Si l'utilisateur tape des lettres, scanf renvoie 0 : on vide ce qu'il a tape
-   (getchar jusqu'a la touche Entree) et on redemande. */
 int lireEntier(void)
 {
     int n;
@@ -46,7 +43,6 @@ int lireEntier(void)
     return n;
 }
 
-/* Meme chose que lireEntier, mais pour un nombre a virgule (prix) */
 float lireReel(void)
 {
     float n;
@@ -63,7 +59,6 @@ float lireReel(void)
     return n;
 }
 
-/* Renvoie 1 si la date existe vraiment, 0 sinon */
 int dateValide(int jour, int mois, int annee)
 {
     int joursParMois[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -78,7 +73,6 @@ int dateValide(int jour, int mois, int annee)
         return 0;
     }
 
-    /* Annee bissextile : fevrier a 29 jours */
     if (annee % 4 == 0 && (annee % 100 != 0 || annee % 400 == 0))
     {
         joursParMois[1] = 29;
