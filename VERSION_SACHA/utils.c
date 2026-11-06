@@ -85,3 +85,23 @@ int dateValide(int jour, int mois, int annee)
 
     return 1;
 }
+
+void enMinuscules(char* texte, char* resultat)
+{
+    int i = 0;
+
+    while (texte[i] != '\0')
+    {
+        if (texte[i] >= 'A' && texte[i] <= 'Z')
+        {
+            resultat[i] = texte[i] + 32;
+        }
+        else
+        {
+            resultat[i] = texte[i];
+        }
+        i = i + 1;
+    }
+
+    resultat[i] = '\0';
+}

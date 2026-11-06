@@ -187,6 +187,7 @@ int indexProduit(Boutique* b, char* ref)
 void rechercherProduitMotCle(Boutique* b)
 {
     char mot[60];
+    char designation[60];
     int i;
     int trouve = 0;
 
@@ -200,11 +201,14 @@ void rechercherProduitMotCle(Boutique* b)
 
     printf("Mot-cle (ex: Casque, USB, Ecran): ");
     scanf(" %59[^\n]", mot);
+    enMinuscules(mot, mot);
     printf("\n");
 
     for (i = 0; i < b->nbProduits; i++)
     {
-        if (b->produits[i].actif == 1 && strstr(b->produits[i].designation, mot) != NULL)
+        enMinuscules(b->produits[i].designation, designation);
+
+        if (b->produits[i].actif == 1 && strstr(designation, mot) != NULL)
         {
             printf("%s - %s - %.2f euros - stock: %d\n", b->produits[i].reference, b->produits[i].designation, b->produits[i].prixUnitaireHT, b->produits[i].quantiteStock);
             trouve = 1;
@@ -338,6 +342,7 @@ void supprimerProduit(Boutique* b)
 void rechercheMultiCriteres(Boutique* b)
 {
     char categorie[30];
+    char categorieProduit[30];
     float prixMax;
     int enStock;
     int i;
@@ -353,6 +358,7 @@ void rechercheMultiCriteres(Boutique* b)
 
     printf("Categorie (ou tout): ");
     scanf(" %29[^\n]", categorie);
+    enMinuscules(categorie, categorie);
 
     do
     {
@@ -375,7 +381,9 @@ void rechercheMultiCriteres(Boutique* b)
             continue;
         }
 
-        if (strcmp(categorie, "tout") != 0 && strcmp(b->produits[i].categorie, categorie) != 0)
+        enMinuscules(b->produits[i].categorie, categorieProduit);
+
+        if (strcmp(categorie, "tout") != 0 && strcmp(categorieProduit, categorie) != 0)
         {
             continue;
         }

@@ -71,7 +71,7 @@ void chiffreAffaires(Boutique* b)
 		}
 	}
 
-	printf("Commandes prises en compte: %d (les annulees sont exclues)\n", nbCommandes);
+	printf("Commandes prises en compte: %d\n", nbCommandes);
 	color(32);
 	printf("CA total HT:  %10.2f euros\n", totalHT);
 	printf("CA total TTC: %10.2f euros\n\n", totalTTC);

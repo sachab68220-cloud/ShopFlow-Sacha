@@ -9,3 +9,4 @@ int VerifChiffres(char* texte, int longueur);
 int lireEntier(void);
 float lireReel(void);
 int dateValide(int jour, int mois, int annee);
+void enMinuscules(char* texte, char* resultat);
