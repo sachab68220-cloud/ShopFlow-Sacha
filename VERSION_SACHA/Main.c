@@ -8,40 +8,6 @@
 #include "initialisation.h"
 #include "utils.h"
 
-void modeDemonstration(Boutique* b)
-{
-    afficherProduits(b);
-    system("pause");
-
-    afficherClient(b);
-    system("pause");
-
-    afficherDetailCommande(b, trouverCommande(b, 1001));
-    system("pause");
-
-    afficherDetailCommande(b, trouverCommande(b, 1003));
-    system("pause");
-
-    afficherDetailCommande(b, trouverCommande(b, 1004));
-    system("pause");
-
-    palmaresProduits(b);
-    system("pause");
-
-    palmaresClients(b);
-    system("pause");
-
-    alertesStock(b);
-    system("pause");
-
-    statistiquesCategories(b);
-
-    color(32);
-    printf("Fin de la demonstration !\n\n");
-    color(0);
-}
-
-
 int main(void)
 {
     Boutique boutique = { "ShopFlow", NULL, 0, 0, NULL, 0, 0, 1001, 1 };
@@ -73,8 +39,7 @@ int main(void)
         printf("2. Gestion des clients\n");
         printf("3. Gestion des commandes\n");
         printf("4. Statistiques de la boutique\n");
-        printf("5. Mode demonstration\n");
-        printf("6. Quitter\n\n");
+        printf("5. Quitter\n\n");
         printf("Votre choix: ");
         choix = lireEntier();
 
@@ -94,18 +59,20 @@ int main(void)
                 printf("4. Supprimer un produit\n");
                 printf("5. Rechercher un produit (reference)\n");
                 printf("6. Rechercher un produit (mot-cle)\n");
-                printf("7. Retour\n\n");
+                printf("7. Recherche multi-criteres\n");
+                printf("8. Reapprovisionner le stock\n");
+                printf("9. Retour\n\n");
                 printf("Votre choix: ");
                 choix2 = lireEntier();
 
-                if (choix2 < 1 || choix2 > 7)
+                if (choix2 < 1 || choix2 > 9)
                 {
                     color(31);
                     printf("Valeur non prise en compte !\n");
                     color(0);
                     system("pause");
                 }
-            } while (choix2 < 1 || choix2 > 7);
+            } while (choix2 < 1 || choix2 > 9);
 
             if (choix2 == 1)
             {
@@ -156,6 +123,14 @@ int main(void)
                 rechercherProduitMotCle(&boutique);
             }
             else if (choix2 == 7)
+            {
+                rechercheMultiCriteres(&boutique);
+            }
+            else if (choix2 == 8)
+            {
+                reapprovisionner(&boutique);
+            }
+            else if (choix2 == 9)
             {
                 continue;
             }
@@ -288,19 +263,18 @@ int main(void)
                 printf("2. Palmares produits\n");
                 printf("3. Palmares clients\n");
                 printf("4. Alertes de stock\n");
-                printf("5. Statistiques par categorie\n");
-                printf("6. Retour\n\n");
+                printf("5. Retour\n\n");
                 printf("Votre choix: ");
                 choix2 = lireEntier();
 
-                if (choix2 < 1 || choix2 > 6)
+                if (choix2 < 1 || choix2 > 5)
                 {
                     color(31);
                     printf("Valeur non prise en compte !\n");
                     color(0);
                     system("pause");
                 }
-            } while (choix2 < 1 || choix2 > 6);
+            } while (choix2 < 1 || choix2 > 5);
 
             if (choix2 == 1)
             {
@@ -320,20 +294,11 @@ int main(void)
             }
             else if (choix2 == 5)
             {
-                statistiquesCategories(&boutique);
-            }
-            else if (choix2 == 6)
-            {
                 continue;
             }
         }
 
         else if (choix == 5)
-        {
-            modeDemonstration(&boutique);
-        }
-
-        else if (choix == 6)
         {
             printf("Au revoir !\n");
         }
@@ -344,12 +309,12 @@ int main(void)
             printf("Valeur non prise en compte !\n");
         }
 
-        if (choix != 6)
+        if (choix != 5)
         {
             system("pause");
         }
 
-    } while (choix != 6);
+    } while (choix != 5);
 
     detruireBoutique(&boutique);
     return 0;

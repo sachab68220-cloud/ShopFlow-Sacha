@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShopFlow - fiche oral</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #222; background: #fff; max-width: 820px; margin: 24px auto; padding: 0 16px; }
+  h1 { font-size: 20pt; color: #1a4f8b; }
+  h2 { font-size: 14pt; color: #1a4f8b; margin-top: 28px; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+  th, td { border: 1px solid #999; padding: 5px 8px; vertical-align: top; text-align: left; }
+  th { background: #dfe9f5; }
+  code { font-family: "Courier New", monospace; color: #8b1a1a; }
+  pre { font-family: "Courier New", monospace; background: #f3f3f3; border: 1px solid #ccc; padding: 8px; }
+  li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<h1>ShopFlow — fiche pour l'oral</h1>
+
+<h2>1. Le projet en une phrase</h2>
+<p>Un programme en C qui gère une boutique <b>en mémoire</b> : produits, clients, commandes et statistiques.<br>
+Tout est rangé dans des <b>tableaux dynamiques</b> (<code>malloc</code> / <code>realloc</code>), et tout est libéré à la fin (<code>detruireBoutique</code>).</p>
+
+<h2>2. L'organisation des fichiers (« architecture modulaire »)</h2>
+<table>
+  <tr><th>Fichier</th><th>Rôle</th></tr>
+  <tr><td><code>types.h</code></td><td>Toutes les structures (Date, Adresse, Produit, LigneCommande, Commande, Client, Boutique). Inclus par tout le monde.</td></tr>
+  <tr><td><code>produits.c/.h</code></td><td>Catalogue : afficher, ajouter, modifier, supprimer, rechercher (référence, mot-clé, multi-critères), réapprovisionner</td></tr>
+  <tr><td><code>clients.c/.h</code></td><td>Clients : liste, fiche avec historique, ajouter, modifier, supprimer</td></tr>
+  <tr><td><code>commandes.c/.h</code></td><td>Commandes : calcul des montants, créer, afficher, ajouter/supprimer une ligne, statut, annuler</td></tr>
+  <tr><td><code>statistiques.c/.h</code></td><td>Chiffre d'affaires, palmarès produits et clients, alertes de stock</td></tr>
+  <tr><td><code>initialisation.c/.h</code></td><td>Données de départ (8 produits, 5 clients, 6 commandes) + <code>detruireBoutique</code></td></tr>
+  <tr><td><code>utils.c/.h</code></td><td>Petits outils : <code>color</code>, <code>VerifChiffres</code>, <code>lireEntier</code>, <code>lireReel</code>, <code>dateValide</code></td></tr>
+  <tr><td><code>Main.c</code></td><td>Le menu</td></tr>
+</table>
+<p><b>Pourquoi des <code>.h</code> ?</b> Le <code>.h</code> contient seulement les <b>prototypes</b> (la « carte de visite » de la fonction). Un autre fichier qui fait <code>#include "produits.h"</code> peut alors appeler les fonctions de <code>produits.c</code>. On n'inclut <b>jamais</b> un <code>.c</code>.<br>
+<b><code>#pragma once</code></b> : empêche qu'un même <code>.h</code> soit inclus deux fois.</p>
+
+<h2>3. Comment les données sont rangées</h2>
+<pre>Boutique
+ ├── produits[]  (tableau dynamique de Produit)
+ └── clients[]   (tableau dynamique de Client)
+      └── commandes[]   (chaque client a son tableau de commandes)
+           └── lignes[] (chaque commande a son tableau de lignes)</pre>
+<p>C'est les <b>4 niveaux d'allocation dynamique</b> demandés : Boutique → Client → Commande → LigneCommande.</p>
+<p>Pour chaque tableau on garde <b>deux compteurs</b> :</p>
+<ul>
+  <li><code>nbXxx</code> = combien de cases sont <b>remplies</b></li>
+  <li><code>capaciteXxx</code> = combien de cases sont <b>réservées</b></li>
+</ul>
+<p>Quand <code>nb == capacite</code>, l'étagère est pleine : on fait <code>realloc</code> pour <b>ajouter 5 cases</b>.<br>
+On passe par un <b>pointeur temporaire</b> (<code>nouveauTableau</code>) : si <code>realloc</code> renvoie <code>NULL</code>, on n'a pas perdu l'ancien tableau.</p>
+
+<h2>4. Les règles métier et où elles sont codées</h2>
+<table>
+  <tr><th>Règle</th><th>Où</th></tr>
+  <tr><td>Remise 0 / 5 / 10 / 15 % selon le montant brut HT</td><td><code>calculCommande</code> (if / else if dans l'ordre)</td></tr>
+  <tr><td>TVA 20 % sur le HT <b>après</b> remise</td><td><code>calculCommande</code></td></tr>
+  <tr><td>Port 5,90 € offert dès 60 € brut HT</td><td><code>calculCommande</code></td></tr>
+  <tr><td>1 point de fidélité par tranche de 10 € TTC</td><td><code>rattacherCommande</code> : <code>(int)(montantTTC / 10)</code> coupe les décimales</td></tr>
+  <tr><td>Points retirés si on annule</td><td><code>annulerCommande</code></td></tr>
+  <tr><td>Statuts EN_COURS → EXPEDIEE → LIVREE, sans retour</td><td><code>changerStatut</code></td></tr>
+  <tr><td>Annuler seulement si EN_COURS, et le stock revient</td><td><code>annulerCommande</code> + <code>remettreStock</code></td></tr>
+  <tr><td>Ajouter / supprimer une ligne seulement si EN_COURS</td><td><code>ajouterLigneCommande</code>, <code>supprimerLigneCommande</code></td></tr>
+  <tr><td>Pas deux lignes pour le même produit</td><td><code>saisirLigne</code> : si le produit est déjà là, on <b>augmente la quantité</b></td></tr>
+  <tr><td>Contrôle du stock sur la quantité cumulée</td><td><code>saisirLigne</code> retire le stock <b>tout de suite</b>, donc la 2<sup>e</sup> fois on compare au stock déjà diminué</td></tr>
+  <tr><td>Suppression <b>logique</b> (<code>actif = 0</code>)</td><td><code>supprimerProduit</code>, <code>supprimerClient</code></td></tr>
+  <tr><td>Refuser de supprimer un produit présent dans une commande non annulée</td><td><code>produitDansCommande</code></td></tr>
+  <tr><td>Refuser de supprimer un client avec des commandes non annulées</td><td><code>clientACommandeActive</code></td></tr>
+  <tr><td>Unicité référence / email, même sur les supprimés</td><td>boucles avec <code>strcmp</code> sur <b>tout</b> le tableau</td></tr>
+  <tr><td>Numéros de commande et ID client automatiques</td><td><code>numeroSuivant</code>, <code>idClientSuivant</code> dans la Boutique</td></tr>
+</table>
+<p><b>Exemple de calcul à savoir refaire</b> (commande 1001) :<br>
+brut = 79,90 + 2×24,50 + 3×9,90 = <b>158,60</b> → palier 100-300 → <b>5 %</b> → remise 7,93<br>
+HT = 150,67 → TVA = 30,13 → port 0 (≥ 60) → <b>TTC = 180,80</b> → <b>18 points</b>.</p>
+
+<h2>5. Les fonctions importantes expliquées simplement</h2>
+<ul>
+  <li><b><code>rechercherProduit</code> / <code>rechercheClient</code></b> : boucle sur le tableau, <code>return i</code> (la <b>case</b>) si trouvé, <code>return -1</code> sinon. Après chaque appel on teste <code>-1</code>.</li>
+  <li><b><code>indexProduit</code> / <code>positionClient</code></b> : la même chose mais <b>sans rien afficher</b> (utilisées dans les commandes).</li>
+  <li><b><code>trouverCommande(b, numero)</code></b> : double boucle (clients puis leurs commandes). Renvoie <b>l'adresse</b> de la commande (<code>&amp;b-&gt;clients[i].commandes[j]</code>) ou <code>NULL</code>, comme <code>malloc</code>. Avec cette adresse on modifie la vraie commande.</li>
+  <li><b><code>creerCommande</code></b> : client → date (vérifiée par <code>dateValide</code>) → <code>malloc</code> des lignes → boucle « ajouter un autre produit ? » → si 0 ligne on <code>free</code> et on annule → <code>rattacherCommande</code> → <code>numeroSuivant + 1</code>.</li>
+  <li><b><code>supprimerLigneCommande</code></b> : on remet le stock, puis on <b>décale</b> les lignes suivantes d'une case vers la gauche pour boucher le trou, puis <code>nbLignes - 1</code>.</li>
+  <li><b>Palmarès</b> : on calcule un nombre par produit (ou client) dans un tableau <code>malloc</code>, puis on cherche <b>le plus grand</b>, on l'affiche, on le met à <b>-1</b> pour ne pas le reprendre, et on recommence (5 fois pour le top 5). À la fin, <code>free</code>.</li>
+  <li><b><code>lireEntier</code></b> : si l'utilisateur tape des lettres, <code>scanf</code> renvoie 0. On vide la saisie avec <code>while (getchar() != '\n');</code> et on redemande → le programme ne part jamais en boucle infinie.</li>
+  <li><b><code>dateValide</code></b> : tableau des jours par mois, février à 29 si l'année est bissextile (<code>annee % 4 == 0</code> et pas <code>% 100</code>, sauf <code>% 400</code>).</li>
+  <li><b><code>detruireBoutique</code></b> : libère <b>du plus petit au plus grand</b> : les lignes de chaque commande, puis les commandes de chaque client, puis les clients, puis les produits. Si on libérait d'abord les clients, on perdrait l'adresse de leurs commandes → fuite mémoire.</li>
+</ul>
+
+<h2>6. Les deux fonctionnalités créatives</h2>
+<ol>
+  <li><b>Recherche multi-critères</b> (Produits → 7) : on choisit une catégorie (ou <code>tout</code>), un prix maximum, et si on veut seulement les produits en stock. La boucle passe sur tous les produits et utilise <code>continue</code> pour <b>sauter</b> ceux qui ne respectent pas un critère : un produit n'est affiché que s'il passe tous les filtres. On compte les produits trouvés pour afficher « Aucun produit » si besoin.</li>
+  <li><b>Réapprovisionnement</b> (Produits → 8) : affiche un par un les produits en alerte (stock ≤ seuil) et demande combien en ajouter (0 pour passer). On ajoute la quantité au stock. Utile pour un vrai commerçant : on voit directement ce qu'il faut recommander. Exemple : la souris passe de 8 à 28, elle n'est plus en alerte.</li>
+</ol>
+
+<h2>7. Les données de test (exigées par le sujet)</h2>
+<ul>
+  <li>8 produits, 4 catégories, <b>2 en alerte</b> (Souris 8 ≤ 15, Hub USB-C 4 ≤ 10)</li>
+  <li>5 clients</li>
+  <li>6 commandes : <b>LIVREE</b> (1001, 1002), <b>EXPEDIEE</b> (1003, &gt; 600 € → 15 %), <b>EN_COURS</b> (1004 avec frais de port, 1006), <b>ANNULEE</b> (1005). Deux commandes ont 3 lignes.</li>
+</ul>
+
+<h2>8. Questions probables du prof</h2>
+<ul>
+  <li><b>Différence entre <code>.</code> et <code>-&gt;</code> ?</b> <code>.</code> sur une structure, <code>-&gt;</code> sur un <b>pointeur</b> vers une structure (<code>b-&gt;nbProduits</code> = <code>(*b).nbProduits</code>).</li>
+  <li><b>Pourquoi <code>Boutique* b</code> en paramètre ?</b> Pour modifier la <b>vraie</b> boutique et pas une copie.</li>
+  <li><b>Pourquoi <code>&amp;</code> dans <code>scanf("%d", &amp;x)</code> mais pas pour un texte ?</b> Un tableau de <code>char</code> est déjà une adresse.</li>
+  <li><b>Pourquoi <code>strcmp</code> / <code>strcpy</code> ?</b> On ne peut pas comparer ou copier des textes avec <code>==</code> ou <code>=</code>.</li>
+  <li><b>Pourquoi <code>" %59[^\n]"</code> ?</b> Lire un texte <b>avec des espaces</b> jusqu'à Entrée ; l'espace au début saute le Entrée restant ; 59 = taille − 1 (place du <code>\0</code>).</li>
+  <li><b>Que se passe-t-il si <code>malloc</code> renvoie NULL ?</b> On affiche une erreur et on arrête proprement (<code>exit(1)</code> à l'initialisation, <code>return</code> ailleurs).</li>
+  <li><b>Pourquoi recopier le prix et le nom dans la ligne de commande ?</b> Pour que la commande garde le prix <b>du jour de la vente</b>, même si on modifie le produit après.</li>
+  <li><b>Pourquoi les stocks ne baissent pas avec les commandes de test ?</b> Ce sont des ventes passées : les stocks de départ sont déjà « après » ces ventes.</li>
+</ul>
+
+</body>
+</html>

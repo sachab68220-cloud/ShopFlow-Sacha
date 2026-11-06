@@ -35,38 +35,6 @@ int quantiteVendue(Boutique* b, char* ref)
 }
 
 
-
-float montantVendu(Boutique* b, char* ref)
-{
-	int i;
-	int j;
-	int k;
-	float total = 0;
-
-	for (i = 0; i < b->nbClients; i++)
-	{
-		for (j = 0; j < b->clients[i].nbCommandes; j++)
-		{
-			if (strcmp(b->clients[i].commandes[j].statut, "ANNULEE") == 0)
-			{
-				continue;
-			}
-
-			for (k = 0; k < b->clients[i].commandes[j].nbLignes; k++)
-			{
-				if (strcmp(b->clients[i].commandes[j].lignes[k].refProduit, ref) == 0)
-				{
-					total = total + b->clients[i].commandes[j].lignes[k].sousTotalHT;
-				}
-			}
-		}
-	}
-
-	return total;
-}
-
-
-
 void chiffreAffaires(Boutique* b)
 {
 	int i;
@@ -284,63 +252,4 @@ void alertesStock(Boutique* b)
 		color(0);
 	}
 	printf("\n");
-}
-
-
-
-void statistiquesCategories(Boutique* b)
-{
-	int i;
-	int j;
-	int dejaVue;
-	int nbProduits;
-	int vendus;
-	float ventes;
-	float valeurStock;
-
-	system("cls");
-	color(96);
-	printf("+--------------------------------------+\n");
-	printf("|      STATISTIQUES PAR CATEGORIE      |\n");
-	printf("+--------------------------------------+\n\n");
-	color(0);
-
-	printf("%-14s %8s %8s %12s %12s\n", "Categorie", "Produits", "Vendus", "Ventes HT", "Val. stock");
-	printf("----------------------------------------------------------\n");
-
-	for (i = 0; i < b->nbProduits; i++)
-	{
-		dejaVue = 0;
-		for (j = 0; j < i; j++)
-		{
-			if (strcmp(b->produits[j].categorie, b->produits[i].categorie) == 0)
-			{
-				dejaVue = 1;
-			}
-		}
-
-		if (dejaVue == 1)
-		{
-			continue;
-		}
-
-		nbProduits = 0;
-		vendus = 0;
-		ventes = 0;
-		valeurStock = 0;
-
-		for (j = i; j < b->nbProduits; j++)
-		{
-			if (strcmp(b->produits[j].categorie, b->produits[i].categorie) == 0)
-			{
-				nbProduits = nbProduits + 1;
-				vendus = vendus + quantiteVendue(b, b->produits[j].reference);
-				ventes = ventes + montantVendu(b, b->produits[j].reference);
-				valeurStock = valeurStock + b->produits[j].prixUnitaireHT * b->produits[j].quantiteStock;
-			}
-		}
-
-		printf("%-14s %8d %8d %12.2f %12.2f\n", b->produits[i].categorie, nbProduits, vendus, ventes, valeurStock);
-	}
-	printf("----------------------------------------------------------\n\n");
 }

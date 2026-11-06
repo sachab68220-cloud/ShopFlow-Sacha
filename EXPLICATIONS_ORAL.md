@@ -8,13 +8,13 @@ Tout est rangé dans des **tableaux dynamiques** (`malloc` / `realloc`), et tout
 | Fichier | Rôle |
 |---|---|
 | `types.h` | Toutes les structures (Date, Adresse, Produit, LigneCommande, Commande, Client, Boutique). Inclus par tout le monde. |
-| `produits.c/.h` | Catalogue : afficher, ajouter, modifier, supprimer, rechercher (référence ou mot-clé) |
+| `produits.c/.h` | Catalogue : afficher, ajouter, modifier, supprimer, rechercher (référence, mot-clé, multi-critères), réapprovisionner |
 | `clients.c/.h` | Clients : liste, fiche avec historique, ajouter, modifier, supprimer |
 | `commandes.c/.h` | Commandes : calcul des montants, créer, afficher, ajouter/supprimer une ligne, statut, annuler |
-| `statistiques.c/.h` | Chiffre d'affaires, palmarès produits et clients, alertes de stock, stats par catégorie |
+| `statistiques.c/.h` | Chiffre d'affaires, palmarès produits et clients, alertes de stock |
 | `initialisation.c/.h` | Données de départ (8 produits, 5 clients, 6 commandes) + `detruireBoutique` |
 | `utils.c/.h` | Petits outils : `color`, `VerifChiffres`, `lireEntier`, `lireReel`, `dateValide` |
-| `Main.c` | Le menu, et le mode démonstration |
+| `Main.c` | Le menu |
 
 **Pourquoi des `.h` ?** Le `.h` contient seulement les **prototypes** (la « carte de visite » de la fonction). Un autre fichier qui fait `#include "produits.h"` peut alors appeler les fonctions de `produits.c`. On n'inclut **jamais** un `.c`.
 **`#pragma once`** : empêche qu'un même `.h` soit inclus deux fois.
@@ -71,8 +71,8 @@ HT = 150,67 → TVA = 30,13 → port 0 (≥ 60) → **TTC = 180,80** → **18 po
 - **`detruireBoutique`** : libère **du plus petit au plus grand** : les lignes de chaque commande, puis les commandes de chaque client, puis les clients, puis les produits. Si on libérait d'abord les clients, on perdrait l'adresse de leurs commandes → fuite mémoire.
 
 ## 6. Les deux fonctionnalités créatives
-1. **Statistiques par catégorie** (menu Statistiques → 5) : pour chaque catégorie, nombre de produits, articles vendus, ventes HT et valeur du stock. Astuce : on saute un produit si un produit **avant lui** a déjà la même catégorie, comme ça chaque catégorie n'est affichée qu'une fois.
-2. **Mode démonstration** (menu principal → 5) : enchaîne automatiquement catalogue, clients, 3 commandes (remise 5 %, remise 15 %, frais de port), palmarès, alertes et catégories. Pratique pour montrer tout le projet en 1 minute.
+1. **Recherche multi-critères** (Produits → 7) : on choisit une catégorie (ou `tout`), un prix maximum, et si on veut seulement les produits en stock. La boucle passe sur tous les produits et utilise `continue` pour **sauter** ceux qui ne respectent pas un critère : un produit n'est affiché que s'il passe tous les filtres. On compte les produits trouvés pour afficher « Aucun produit » si besoin.
+2. **Réapprovisionnement** (Produits → 8) : affiche un par un les produits en alerte (stock ≤ seuil) et demande combien en ajouter (0 pour passer). On ajoute la quantité au stock. Utile pour un vrai commerçant : on voit directement ce qu'il faut recommander. Exemple : la souris passe de 8 à 28, elle n'est plus en alerte.
 
 ## 7. Les données de test (exigées par le sujet)
 - 8 produits, 4 catégories, **2 en alerte** (Souris 8 ≤ 15, Hub USB-C 4 ≤ 10)

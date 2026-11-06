@@ -333,3 +333,134 @@ void supprimerProduit(Boutique* b)
     color(0);
 }
 
+
+
+void rechercheMultiCriteres(Boutique* b)
+{
+    char categorie[30];
+    float prixMax;
+    int enStock;
+    int i;
+    int trouve = 0;
+
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|       RECHERCHE MULTI-CRITERES       |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    printf("Categorie (ou tout): ");
+    scanf(" %29[^\n]", categorie);
+
+    do
+    {
+        printf("Prix maximum: ");
+        prixMax = lireReel();
+    } while (prixMax <= 0);
+
+    do
+    {
+        printf("Seulement les produits en stock ? (1 = oui, 0 = non): ");
+        enStock = lireEntier();
+    } while (enStock != 0 && enStock != 1);
+
+    printf("\n");
+
+    for (i = 0; i < b->nbProduits; i++)
+    {
+        if (b->produits[i].actif == 0)
+        {
+            continue;
+        }
+
+        if (strcmp(categorie, "tout") != 0 && strcmp(b->produits[i].categorie, categorie) != 0)
+        {
+            continue;
+        }
+
+        if (b->produits[i].prixUnitaireHT > prixMax)
+        {
+            continue;
+        }
+
+        if (enStock == 1 && b->produits[i].quantiteStock == 0)
+        {
+            continue;
+        }
+
+        printf("%s - %-20s %-13s %7.2f euros - stock: %d\n", b->produits[i].reference, b->produits[i].designation, b->produits[i].categorie, b->produits[i].prixUnitaireHT, b->produits[i].quantiteStock);
+        trouve = trouve + 1;
+    }
+
+    if (trouve == 0)
+    {
+        color(31);
+        printf("Aucun produit ne correspond.\n");
+        color(0);
+    }
+    else
+    {
+        color(32);
+        printf("\n%d produit(s) trouve(s).\n", trouve);
+        color(0);
+    }
+    printf("\n");
+}
+
+
+void reapprovisionner(Boutique* b)
+{
+    int i;
+    int quantite;
+    int nbAlertes = 0;
+
+    system("cls");
+
+    color(96);
+    printf("+--------------------------------------+\n");
+    printf("|        REAPPROVISIONNER LE STOCK     |\n");
+    printf("+--------------------------------------+\n\n");
+    color(0);
+
+    for (i = 0; i < b->nbProduits; i++)
+    {
+        if (b->produits[i].actif == 0 || b->produits[i].quantiteStock > b->produits[i].seuilAlerte)
+        {
+            continue;
+        }
+
+        nbAlertes = nbAlertes + 1;
+
+        color(33);
+        printf("%s - %s : stock %d (seuil %d)\n", b->produits[i].reference, b->produits[i].designation, b->produits[i].quantiteStock, b->produits[i].seuilAlerte);
+        color(0);
+
+        do
+        {
+            printf("Quantite a ajouter (0 pour passer): ");
+            quantite = lireEntier();
+        } while (quantite < 0);
+
+        b->produits[i].quantiteStock = b->produits[i].quantiteStock + quantite;
+
+        if (quantite > 0)
+        {
+            color(32);
+            printf("Nouveau stock: %d\n\n", b->produits[i].quantiteStock);
+            color(0);
+        }
+        else
+        {
+            printf("\n");
+        }
+    }
+
+    if (nbAlertes == 0)
+    {
+        color(32);
+        printf("Aucun produit a reapprovisionner.\n\n");
+        color(0);
+    }
+}
